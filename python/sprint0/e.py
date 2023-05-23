@@ -2,8 +2,20 @@ from typing import List, Tuple, Optional
 
 
 def two_sum(arr: List[int], target_sum: int) -> Optional[Tuple[int, int]]:
-    # Здесь реализация вашего решения
-    pass
+    arr.sort()
+    left = 0
+    right = len(arr) - 1
+
+    while left < right:
+        current_sum = arr[left] + arr[right]
+        if current_sum == target_sum:
+            return arr[left], arr[right]
+        if current_sum < target_sum:
+            left += 1
+        else:
+            right -= 1
+    # Если ничего не нашлось в цикле, значит, нужной пары элементов в массиве нет.
+    return None
 
 
 def read_input() -> Tuple[List[int], int]:
