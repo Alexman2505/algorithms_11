@@ -1,20 +1,12 @@
-# 87704141
-from typing import List, Tuple
+# 87747234
+from typing import Generator, List, Tuple
 
 
 class InputError(Exception):
     pass
 
 
-class LengthMismatchError(Exception):
-    pass
-
-
-class ZeroNotFoundError(Exception):
-    pass
-
-
-def get_distance(n: int, numbers: List[int]) -> int:
+def get_distance(n: int, numbers: List[int]) -> Generator[int, None, None]:
     distance = n
     for i in numbers:
         if i == 0:
@@ -25,23 +17,38 @@ def get_distance(n: int, numbers: List[int]) -> int:
 
 
 def read_input() -> Tuple[int, List[int]]:
-    n = int(input())
+    try:
+        n = int(input())
+    except ValueError:
+        raise InputError(
+            'Ошибка! Было введено не число. Введите число в диапазоне от 1 до 10^6\n'
+        )
     if not 1 <= n <= 10**6:
         raise InputError(
-            'Ошибка! Значение n должно быть в диапазоне от 1 до 10^6'
+            'Ошибка! Число должно быть в диапазоне от 1 до 10^6\n'
         )
-    numbers = list(map(int, input().strip().split()))
+    numbers = input().strip().split()
     if len(numbers) != n:
-        raise LengthMismatchError(
-            'Ошибка! Длина списка не соответствует введенному ранее числу'
+        raise InputError(
+            'Ошибка! Количество введенных символов [длина списка] не '
+            'соответствует введенному ранее числу\n'
         )
-    if 0 not in numbers:
-        raise ZeroNotFoundError('Ошибка! Нет нуля в введенном списке')
+    try:
+        numbers = list(map(int, numbers))
+    except ValueError:
+        raise InputError('Ошибка! Вы ввели недопустимые символы [не числа]\n')
+    if not any(number == 0 for number in numbers):
+        raise InputError('Ошибка! Вы забыли ввести ноль\n')
+    if any(number < 0 for number in numbers if number != 0):
+        raise InputError('Ошибка! В списке присутствуют отрицательные числа\n')
     return n, numbers
 
 
 if __name__ == '__main__':
-    n, numbers = read_input()
-    left_distance = get_distance(n, numbers)
-    right_distance = reversed(tuple(get_distance(n, reversed(numbers))))
-    print(*map(min, zip(left_distance, right_distance)))
+    try:
+        n, numbers = read_input()
+        left_distance = get_distance(n, numbers)
+        right_distance = reversed(tuple(get_distance(n, reversed(numbers))))
+        print(*map(min, zip(left_distance, right_distance)))
+    except InputError as e:
+        print(e)
