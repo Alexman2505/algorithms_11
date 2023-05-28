@@ -1,4 +1,4 @@
-# 87752894
+# 87757229
 from typing import Tuple
 
 
@@ -32,11 +32,10 @@ def calculations(
     k: int, matrix: str, valid_chars: str = '123456789.', players: int = 2
 ) -> int:
     return sum(
-        1
+        0 < elem <= k * players
         for elem in [
             matrix.count(char) for char in valid_chars if char.isdigit()
         ]
-        if 0 < elem <= k * players
     )
 
 
